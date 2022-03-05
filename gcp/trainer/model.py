@@ -7,14 +7,12 @@ import torch.nn as nn
 from torch.nn import functional as F
 
 from config import Config as cfg
-
     
 class Speech2Emotion(nn.Module):
     def __init__(self, input_spec_size=cf.INPUT_SPEC_SIZE, cnn_filter_size=cfg.CNN_FILTER_SIZE, lstm_hidden_size=128, num_layers_lstm=2,
                  dropout_p=0.2, bidirectional=True, rnn_cell=cfg.RNN_CELL, num_gender_class=cfg.NUM_GENDER_CLASSES,
                  num_emotion_classes=cfg.NUM_EMOTION_CLASSES):
             
-        
         super(Speech2Emotion, self).__init__()
         self.input_spec_size = input_spec_size
         self.lstm_hidden_size = lstm_hidden_size
