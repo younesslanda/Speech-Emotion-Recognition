@@ -9,4 +9,4 @@ The dataset that is used is `RAVDESS` dataset (The Ryerson Audio-Visual Database
 The dataset have 7356 files (total size: 24.8 GB) and contains   24 professional actors (12 female, 12 male), vocalizing two lexically-matched statements in a neutral North American accent. Speech includes calm, happy, sad, angry, fearful, surprise, and disgust expressions, and song contains calm, happy, sad, angry, and fearful emotions. Each expression is produced at two levels of emotional intensity (normal, strong), with an additional neutral expression. All conditions are available in three modality formats: Audio-only (16bit, 48kHz .wav), Audio-Video (720p H.264, AAC 48kHz, .mp4), and Video-only (no sound).  We only considered the Audio-only files.
 
 ## Model
-The model 
+The model is trained on the google cloud platfrom GCP. The scripts for training are located in the `gcp` folder.
