@@ -1,9 +1,11 @@
 #Author : Youness Landa
 import os
 
-from torch.utils.data import DataLoader
 import torch.nn as nn
 from torch import optim
+from torch.utils.data import DataLoader
+
+from torch.utils.tensorboard import SummaryWriter
 
 from utils import download_data_from_gcs
 from model import Speech2Emotion
@@ -36,4 +38,5 @@ def main():
     loss = nn.CrossEntropyLoss()
     
     
-    for epoch in range(cfg.NUM_EPOCHS):
+if __name__ == '__main__':
+    main()
