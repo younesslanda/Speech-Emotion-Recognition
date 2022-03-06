@@ -43,4 +43,5 @@ def collate_fn(batch):
     for i, feature in enumerate(features):
         padded_features[i] = F.pad(feature, (0, max(lengths) - lengths[i]))
 
-    return padded_features, torch.tensor(lengths), torch.tensor(emotion_idxs), torch.tensor(gender_idxs)
+    return padded_features.to(cfg.DEVICE), torch.tensor(lengths).to(cfg.DEVICE),
+           torch.tensor(emotion_idxs).to(cfg.DEVICE), torch.tensor(gender_idxs).to(cfg.DEVICE)

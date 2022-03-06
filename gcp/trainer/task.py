@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader
 import torch.nn as nn
 from torch import optim
 
-from helper import download_data_from_gcs
+from utils import download_data_from_gcs
 from model import Speech2Emotion
 from dataset import Dataset, collate_fn
 
@@ -34,3 +34,6 @@ def main():
     
     optimizer = optim.Adam(model.parameters(), lr=cfg.LR, weight_decay=cfg.WEIGHT_DECAY)
     loss = nn.CrossEntropyLoss()
+    
+    
+    for epoch in range(cfg.NUM_EPOCHS):
