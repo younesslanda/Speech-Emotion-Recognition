@@ -11,6 +11,9 @@ COPY . /trainer
 
 WORKDIR /trainer
 
-RUN pip install -r requirements.txt
+RUN sudo apt-get -y build-dep matplotlib
+RUN sudo apt-get install python3-matplotlib
+RUN pip3 install -r requirements.txt
+RUN pip3 freeze > requirements.txt
 
 ENTRYPOINT ["python", "-m", "task"]

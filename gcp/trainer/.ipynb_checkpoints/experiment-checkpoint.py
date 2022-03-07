@@ -1,6 +1,9 @@
 #Author : Youness Landa
 import copy, time, logging
 
+from sklearn.metrics import confusion_matrix
+import matplotlib.pyplot as plt
+
 from config import Config as cfg
 
 class Experiment:
@@ -70,14 +73,14 @@ class Experiment:
                 epoch_accuracy_gender  = running_gender_corrects  / len(self.dataloaders[phase].dataset)
                 
                 if phase == 'train':
-                    writer.add_scalar('Loss/train', epoch_loss, epoch)
-                    writer.add_scalar('Accuracy/train/E', epoch_accuracy_emotion, epoch)
-                    writer.add_scalar('Accuracy/train/G', epoch_accuracy_gender, epoch)
+                    self.writer.add_scalar('Loss/train', epoch_loss, epoch)
+                    self.writer.add_scalar('Accuracy/train/E', epoch_accuracy_emotion, epoch)
+                    self.writer.add_scalar('Accuracy/train/G', epoch_accuracy_gender, epoch)
 
                 elif phase == 'valid':
-                    writer.add_scalar('Loss/valid', epoch_loss, epoch)
-                    writer.add_scalar('Accuracy/valid/E', epoch_accuracy_emotion, epoch)
-                    writer.add_scalar('Accuracy/valid/G', epoch_accuracy_gender, epoch)
+                    self.writer.add_scalar('Loss/valid', epoch_loss, epoch)
+                    self.writer.add_scalar('Accuracy/valid/E', epoch_accuracy_emotion, epoch)
+                    self.writer.add_scalar('Accuracy/valid/G', epoch_accuracy_gender, epoch)
                     
                 print('phase : {} --- epoch : {} -- Loss: {:.4f} - Acc/E: {:.4f} - Acc/G: {:.4f}'.format(
                     phase, epoch, epoch_loss, epoch_accuracy_emotion, epoch_accuracy_gender))
@@ -99,5 +102,34 @@ class Experiment:
         model.load_state_dict(best_model_weights)
         return model
     
-    def test(self):
-        self.dataloaders['test']
+    def test(self, model):
+        predictions_emotion = []
+        predictions_gender  = []
+        
+        for i_batch, sample in enumerate(self.dataloaders['test']):
+            feature, length, emotion_idx, gender_idx = sample
+            with torch.no_grad():
+                emotion_output, gender_output = model(feature, length)
+                
+                _, emotion_prediction = torch.max(emotion_output, 1)
+                _, gender_prediction  = torch.max(gender_output, 1)
+                
+                predictions_emotion.append((emotion_idx.item(), emotion_prediction.item()))
+                predictions_gender.append((gender_idx.item(), gender_prediction.item()))
+        
+        #from list of tuples to tuple of lists
+        true_emotion, pred_emotion = zip(*predictions_emotion)
+        true_gender , pred_gender  = zip(*predictions_gender)
+        
+        emotion_cm = confusion_matrix(true_emotion, pred_emotion, labels=[1,2,3,4,5,6,7,8])
+        gender_cm  = confusion_matrix(true_gender , pred_gender, labels=[0,1])
+        
+        plt.figure(figsize = (10,7))
+        figure = sns.heatmap(emotion_cm, annot=True, cmap='YlGn').get_figure()
+        plt.close(figure)
+        self.writer.add_figure("Test/cm/E", figure)
+        
+        plt.figure(figsize = (10,7))
+        figure = sns.heatmap(gender_cm, annot=True, cmap='YlGn').get_figure()
+        plt.close(figure)
+        self.writer.add_figure("Test/cm/G", figure)

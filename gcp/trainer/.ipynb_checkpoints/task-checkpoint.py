@@ -41,10 +41,11 @@ def main():
     
     dataloader_train = DataLoader(dataset=dataset_train, batch_size=cfg.BATHC_SIZE, shuffle=True, collate_fn=collate_fn)
     dataloader_valid = DataLoader(dataset=dataset_valid, batch_size=cfg.BATHC_SIZE, shuffle=True, collate_fn=collate_fn)
-    dataloader_test  = DataLoader(dataset=dataset_test,  batch_size=cfg.BATHC_SIZE, shuffle=True, collate_fn=collate_fn)
+    dataloader_test  = DataLoader(dataset=dataset_test,  batch_size=1, shuffle=True, collate_fn=collate_fn)
     
     # Defining the model
-    model = Speech2Emotion()
+    logging.info('DEVICE usef : {}'.format(cfg.DEVICE))
+    model = Speech2Emotion().to(cfg.DEVICE)
     
     optimizer = Adam(model.parameters(), lr=cfg.LR, weight_decay=cfg.WEIGHT_DECAY)
     criterion = nn.CrossEntropyLoss()
