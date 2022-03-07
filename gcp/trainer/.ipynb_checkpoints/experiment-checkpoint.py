@@ -4,10 +4,11 @@ import copy, time, logging
 from config import Config as cfg
 
 class Experiment:
-    def __init__(self, dataloader_train, dataloader_valid, optimizer, criterion, writer):
+    def __init__(self, dataloader_train, dataloader_valid, dataloader_test, optimizer, criterion, writer):
         self.dataloaders = dict()
         self.dataloaders['train'] = dataloader_train
         self.dataloaders['valid'] = dataloader_valid
+        self.dataloaders['test']  = dataloader_test
         
         self.optimizer = optimizer
         self.criterion = criterion
@@ -15,7 +16,6 @@ class Experiment:
         self.writer = writer
         
     def run(self, model):
-        
         best_model_weights = copy.deepcopy(model.state_dict())
         best_accuracy = 0.0
         
@@ -98,3 +98,6 @@ class Experiment:
         
         model.load_state_dict(best_model_weights)
         return model
+    
+    def test(self):
+        self.dataloaders['test']

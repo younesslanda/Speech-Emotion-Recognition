@@ -5,7 +5,7 @@ import subprocess
 from config import Config as cfg
 
 def make_directories():
-    logger.info('Making necessary directories')
+    logging.info('Making necessary directories')
     if not os.path.exists(cfg.LOCAL_PATH):
         os.mkdir(cfg.LOCAL_PATH)
         
@@ -31,12 +31,13 @@ def make_directories():
         
     if not os.path.exists(os.path.join(cfg.OUTPUT_PATH, cfg.LOG_DIR, cfg.TENSORBOARD_LOG_DIR)):
         os.mkdir(os.path.join(cfg.OUTPUT_PATH, cfg.LOG_DIR, cfg.TENSORBOARD_LOG_DIR))
+    logging.info('End of making necessary directories \n')
     
-
 def download_data_from_gcs():
     '''
         Downloads data from Google Cloud Storage (GCS) bucket.
     '''
+    logging.info('Downloading data from Google Cloud Storage')
     subprocess.call([
         'gsutil', '-q', '-m', 'cp',
         # Storage path
@@ -60,21 +61,17 @@ def download_data_from_gcs():
         # Local path
         os.path.join(cfg.LOCAL_PATH, cfg.TEST_DATA_DIR)
     ])
+    logging.info('- Data has been successfully downloaded from GCS -\n')
     
-    print('- Data has been successfully downloaded from GCS -\n')
-    
-def export_to_gcs(fitted_pipeline: Pipeline, model_dir: str):
+def export_to_gcs():
     '''
         Exports all training files to GCS Bucket
     '''
-    scheme, bucket, path, file = process_gcs_uri(model_dir)
-    if scheme != "gs:":
-        raise ValueError("URI scheme must be gs")
-    
-    # Upload the model to GCS
-    b = storage.Client().bucket(bucket)
-    export_path = os.path.join(path, 'model.pkl')
-    blob = b.blob(export_path)
-    
-    blob.upload_from_string(pickle.dumps(fitted_pipeline))
-    return scheme + "//" + os.path.join(bucket, export_path)
+    logging.info(' - Exporting all training files to GCS Bucket -\n')
+    subprocess.call([
+        'gsutil', '-q', '-m', 'cp', '-r'
+        # Output path
+        os.path.join(cfg.OUTPUT_PATH),
+        # GCS path
+        os.path.join(cfg.STORAGE_BUCKET)
+    ])

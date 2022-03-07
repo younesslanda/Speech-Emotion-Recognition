@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader
 
 from torch.utils.tensorboard import SummaryWriter
 
-from utils import download_data_from_gcs, make_directories
+from utils import download_data_from_gcs, make_directories, export_to_gcs
 from model import Speech2Emotion
 from dataset import Dataset, collate_fn
 from experiment import Experiment
@@ -54,7 +54,7 @@ def main():
     writer = SummaryWriter(tensorboard_log_dir)
     
     # Running the experiment
-    exp = Experiment(dataloader_train, dataloader_valid, optimizer, criterion, writer)
+    exp = Experiment(dataloader_train, dataloader_valid, dataloader_test, optimizer, criterion, writer)
     model = exp.run(model)
     
     # Saving the model
@@ -65,8 +65,12 @@ def main():
     
     # Closing the tensorboard writer
     print('Tensorboard logs are saved to : {}'.format(tensorboard_log_dir))
-    logging.info('Tensorboard logs are saved to : {}, closing the tensorboard writer.'.format(tensorboard_log_dir)')
+    logging.info('Tensorboard logs are saved to : {}, closing the tensorboard writer.'.format(tensorboard_log_dir))
     writer.close()
+    
+    # Exporting training files to GCS
+    export_to_gcs()
+    
     
     
 if __name__ == '__main__':
