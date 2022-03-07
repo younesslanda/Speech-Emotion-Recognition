@@ -106,7 +106,8 @@ class Experiment:
         predictions_emotion = []
         predictions_gender  = []
         
-        for i_batch, sample in enumerate(self.dataloaders['test']):
+        logging.info('\n- Beginning the test -')
+        for i_, sample in enumerate(self.dataloaders['test']):
             feature, length, emotion_idx, gender_idx = sample
             with torch.no_grad():
                 emotion_output, gender_output = model(feature, length)
@@ -116,14 +117,19 @@ class Experiment:
                 
                 predictions_emotion.append((emotion_idx.item(), emotion_prediction.item()))
                 predictions_gender.append((gender_idx.item(), gender_prediction.item()))
+                logging.info('true label [E | G] : [{} | {}] --- predicted label [E | G] : [{} | {}]'.format(
+                   emotion_idx.item(), gender_idx.item(), emotion_prediction.item(), gender_prediction.item()
+                ))
         
         #from list of tuples to tuple of lists
         true_emotion, pred_emotion = zip(*predictions_emotion)
         true_gender , pred_gender  = zip(*predictions_gender)
         
+        logging.info('\nCalculating the confusion matrices')
         emotion_cm = confusion_matrix(true_emotion, pred_emotion, labels=[1,2,3,4,5,6,7,8])
         gender_cm  = confusion_matrix(true_gender , pred_gender, labels=[0,1])
         
+        logging.info('Writing to TensorBoard the confusion matrixe figure')
         plt.figure(figsize = (10,7))
         figure = sns.heatmap(emotion_cm, annot=True, cmap='YlGn').get_figure()
         plt.close(figure)

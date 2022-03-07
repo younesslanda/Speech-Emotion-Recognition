@@ -57,6 +57,7 @@ def main():
     # Running the experiment
     exp = Experiment(dataloader_train, dataloader_valid, dataloader_test, optimizer, criterion, writer)
     model = exp.run(model)
+    exp.test(model)
     
     # Saving the model
     model_path = os.path.join(cfg.OUTPUT_PATH, cfg.MODEL_DIR)
