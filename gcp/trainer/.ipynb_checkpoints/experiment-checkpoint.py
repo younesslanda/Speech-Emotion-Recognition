@@ -1,8 +1,5 @@
 #Author : Youness Landa
-import copy
-import time
-
-
+import copy, time, logging
 
 from config import Config as cfg
 
@@ -23,11 +20,11 @@ class Experiment:
         best_accuracy = 0.0
         
         start_train = time.time()
+        logging.info(' - Start of training of the model - \n')
         
         for epoch in range(cfg.NUM_EPOCHS):
-            print('Epoch {}/{}'.format(epoch, epochs - 1))
-            print('-' * 10)
-            print('/n')
+            logging.info('\nEpoch {}/{}'.format(epoch + 1, cfg.NUM_EPOCHS))
+            logging.info('-' * 10)
 
             # Each epoch has a training and validation phase
             for phase in ['train', 'valid']:
@@ -84,6 +81,8 @@ class Experiment:
                     
                 print('phase : {} --- epoch : {} -- Loss: {:.4f} - Acc/E: {:.4f} - Acc/G: {:.4f}'.format(
                     phase, epoch, epoch_loss, epoch_accuracy_emotion, epoch_accuracy_gender))
+                logging.info('phase : {} --- epoch : {} -- Loss: {:.4f} - Acc/E: {:.4f} - Acc/G: {:.4f}'.format(
+                    phase, epoch, epoch_loss, epoch_accuracy_emotion, epoch_accuracy_gender))
                 
                 # deep copy the best model
                 if phase == 'valid' and epoch_accuracy_emotion > best_accuracy:
@@ -91,8 +90,11 @@ class Experiment:
                     best_model_weights = copy.deepcopy(model.state_dict())
                     
         end_train = time.time() - start_train
-        print('/nTraining complete in {:.0f}m {:.0f}s'.format(end_train // 60, end_train % 60))
+        print('\n\nTraining complete in {:.0f}m {:.0f}s'.format(end_train // 60, end_train % 60))
         print('Best validation emotion accuracy: {:4f}'.format(best_accuracy))
+        
+        logging.info('/nTraining complete in {:.0f}m {:.0f}s'.format(end_train // 60, end_train % 60))
+        logging.info('Best validation emotion accuracy: {:4f}'.format(best_accuracy))
         
         model.load_state_dict(best_model_weights)
         return model
