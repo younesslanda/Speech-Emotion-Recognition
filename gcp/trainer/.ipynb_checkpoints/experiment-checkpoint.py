@@ -126,16 +126,30 @@ class Experiment:
         true_gender , pred_gender  = zip(*predictions_gender)
         
         logging.info('\nCalculating the confusion matrices')
-        emotion_cm = confusion_matrix(true_emotion, pred_emotion, labels=[1,2,3,4,5,6,7,8])
-        gender_cm  = confusion_matrix(true_gender , pred_gender, labels=[0,1])
+        emotion_cm = confusion_matrix(true_emotion, pred_emotion, labels=cfg.EMOTION_LABELS)
+        gender_cm  = confusion_matrix(true_gender , pred_gender, labels=cfg.GENDER_LABELS)
         
-        logging.info('Writing to TensorBoard the confusion matrixe figure')
+        logging.info('Generating the classification report')
+        emotion_classification_report = classification_report(true_emotion, pred_emotion, target_names=cfg.EMOTION_NAMES, 
+                                                              labels=cfg.EMOTION_LABELS)
+        gender_classification_report  = classification_report(true_gender , pred_gender, target_names=cfg.GENDER_NAMES
+                                                             labels=cfg.GENDER_LABELS)
+        
+        logging.info('Writing the confusion matrix figure of the test set to TensorBoard ')
+        logging.info('confusion matrix - emotion')
         plt.figure(figsize = (10,7))
         figure = sns.heatmap(emotion_cm, annot=True, cmap='YlGn').get_figure()
         plt.close(figure)
-        self.writer.add_figure("Test/cm/E", figure)
+        self.writer.add_figure("Test/E/cm", figure)
         
+        logging.info('confusion matrix - gender')
         plt.figure(figsize = (10,7))
         figure = sns.heatmap(gender_cm, annot=True, cmap='YlGn').get_figure()
         plt.close(figure)
-        self.writer.add_figure("Test/cm/G", figure)
+        self.writer.add_figure("Test/G/cm", figure)
+        
+        logging.info('Writing the classification report to TensorBoard ')
+        logging.info('classification report - emotion')
+        self.writer.add_text('Test/E/report', emotion_classification_report)
+        logging.info('classification report - gender')
+        self.writer.add_text('Test/G/report', gender_classification_report)

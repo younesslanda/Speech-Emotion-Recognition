@@ -19,7 +19,7 @@ class Config:
     LOG_FILE            = "trainer.log"
     TENSORBOARD_LOG_DIR = 'tensorboardlogs'
     
-    #Model parameters :
+    # Model parameters :
     N_MELS              = 128
     INPUT_SPEC_SIZE     = 3 * N_MELS
     RNN_CELL            = 'lstm' # 'lstm' | 'gru'
@@ -32,6 +32,13 @@ class Config:
     WEIGHT_DECAY = 1e-06
     NUM_EPOCHS   = 100
     
-    #For loss function
+    # For loss function
     ALPHA = 1
     BETA  = 1
+    
+    # Classes
+    EMOTION_NAMES  = ['neutral', 'calm', 'happy', 'sad', 'angry', 'fearful', 'disgust', 'surprised']
+    EMOTION_LABELS = [1, 2, 3, 4, 5, 6, 7, 8]
+    
+    GENDER_NAMES   = ['female', 'male']
+    GENDER_LABELS  = [0, 1]

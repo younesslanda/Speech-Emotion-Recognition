@@ -23,6 +23,8 @@ def main():
         level    = logging.INFO,
     )
     
+    logging.info('Training job starting ...\n')
+    
     # Making the necessary directories
     make_directories()
     
@@ -73,7 +75,7 @@ def main():
     # Exporting training files to GCS
     export_to_gcs()
     
-    
+    logging.info('Training job completed. Exiting...')
     
 if __name__ == '__main__':
     main()
