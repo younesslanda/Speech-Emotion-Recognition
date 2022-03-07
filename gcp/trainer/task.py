@@ -46,7 +46,7 @@ def main():
     dataloader_test  = DataLoader(dataset=dataset_test,  batch_size=1, shuffle=True, collate_fn=collate_fn)
     
     # Defining the model
-    logging.info('DEVICE usef : {}'.format(cfg.DEVICE))
+    logging.info('DEVICE used : {}'.format(cfg.DEVICE))
     model = Speech2Emotion().to(cfg.DEVICE)
     
     optimizer = Adam(model.parameters(), lr=cfg.LR, weight_decay=cfg.WEIGHT_DECAY)
