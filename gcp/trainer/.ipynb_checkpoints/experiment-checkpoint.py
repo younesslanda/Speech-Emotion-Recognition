@@ -1,8 +1,9 @@
 #Author : Youness Landa
 import copy, time, logging
 
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, classification_report
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 import torch
 
@@ -85,9 +86,9 @@ class Experiment:
                     self.writer.add_scalar('Accuracy/valid/G', epoch_accuracy_gender, epoch)
                     
                 print('phase : {} --- epoch : {} -- Loss: {:.4f} - Acc/E: {:.4f} - Acc/G: {:.4f}'.format(
-                    phase, epoch, epoch_loss, epoch_accuracy_emotion, epoch_accuracy_gender))
+                    phase, epoch + 1, epoch_loss, epoch_accuracy_emotion, epoch_accuracy_gender))
                 logging.info('phase : {} --- epoch : {} -- Loss: {:.4f} - Acc/E: {:.4f} - Acc/G: {:.4f}'.format(
-                    phase, epoch, epoch_loss, epoch_accuracy_emotion, epoch_accuracy_gender))
+                    phase, epoch + 1, epoch_loss, epoch_accuracy_emotion, epoch_accuracy_gender))
                 
                 # deep copy the best model
                 if phase == 'valid' and epoch_accuracy_emotion > best_accuracy:
@@ -95,10 +96,10 @@ class Experiment:
                     best_model_weights = copy.deepcopy(model.state_dict())
                     
         end_train = time.time() - start_train
-        print('\n\nTraining complete in {:.0f}m {:.0f}s'.format(end_train // 60, end_train % 60))
+        print('\nTraining complete in {:.0f}m {:.0f}s'.format(end_train // 60, end_train % 60))
         print('Best validation emotion accuracy: {:4f}'.format(best_accuracy))
         
-        logging.info('/nTraining complete in {:.0f}m {:.0f}s'.format(end_train // 60, end_train % 60))
+        logging.info('\nTraining complete in {:.0f}m {:.0f}s'.format(end_train // 60, end_train % 60))
         logging.info('Best validation emotion accuracy: {:4f}'.format(best_accuracy))
         
         model.load_state_dict(best_model_weights)
@@ -108,6 +109,7 @@ class Experiment:
         predictions_emotion = []
         predictions_gender  = []
         
+        print('\n- Beginning the test -')
         logging.info('\n- Beginning the test -')
         for i_, sample in enumerate(self.dataloaders['test']):
             feature, length, emotion_idx, gender_idx = sample
@@ -139,12 +141,14 @@ class Experiment:
         
         logging.info('Writing the confusion matrix figure of the test set to TensorBoard ')
         logging.info('confusion matrix - emotion')
+        print('confusion matrix - emotion')
         plt.figure(figsize = (10,7))
         figure = sns.heatmap(emotion_cm, annot=True, cmap='YlGn').get_figure()
         plt.close(figure)
         self.writer.add_figure("Test/E/cm", figure)
         
         logging.info('confusion matrix - gender')
+        print('confusion matrix - gender')
         plt.figure(figsize = (10,7))
         figure = sns.heatmap(gender_cm, annot=True, cmap='YlGn').get_figure()
         plt.close(figure)
@@ -152,8 +156,12 @@ class Experiment:
         
         logging.info('Writing the classification report to TensorBoard ')
         logging.info('classification report - emotion')
+        logging.info(emotion_classification_report)
+        print('classification report - emotion')
         self.writer.add_text('Test/E/report', emotion_classification_report)
         logging.info('classification report - gender')
+        logging.info(gender_classification_report)
+        print('classification report - gender')
         self.writer.add_text('Test/G/report', gender_classification_report)
         
 if __name__ == '__main__':

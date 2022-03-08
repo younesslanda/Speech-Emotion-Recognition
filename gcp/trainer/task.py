@@ -63,10 +63,10 @@ def main():
     exp.test(model)
     
     # Saving the model
-    model_path = os.path.join(cfg.OUTPUT_PATH, cfg.MODEL_DIR)
+    model_path = os.path.join(cfg.OUTPUT_PATH, cfg.MODEL_DIR, cfg.MODEL_NAME)
     torch.save(model.state_dict(), model_path)
-    print('Model is saved to : {}'.format(model_dir))
-    logging.info('Model is saved to : {}'.format(model_dir))
+    print('Model is saved to : {}'.format(model_path))
+    logging.info('Model is saved to : {}'.format(model_path))
     
     # Closing the tensorboard writer
     print('Tensorboard logs are saved to : {}'.format(tensorboard_log_dir))
@@ -81,9 +81,18 @@ def main():
 if __name__ == '__main__':
     #main()
     
+    log_file_name = os.path.join(cfg.OUTPUT_PATH, cfg.LOG_DIR, cfg.LOG_FILE)
+    logging.basicConfig(
+        format   = '%(asctime)s : %(message)s',
+        filename = log_file_name,
+        level    = logging.INFO,
+    )
+    
+    logging.info('Training job starting ...\n')
     train_pck_dir = '../../feature-extraction/test'
+    
     dataset = Dataset(train_pck_dir)
-    dataloader_train = DataLoader(dataset=dataset, batch_size=cfg.BATHC_SIZE, shuffle=True, collate_fn=collate_fn)
+    dataloader_train = DataLoader(dataset=dataset, batch_size=1, shuffle=True, collate_fn=collate_fn)
     
     model = Speech2Emotion().to(cfg.DEVICE)
     
@@ -94,12 +103,12 @@ if __name__ == '__main__':
     writer = SummaryWriter(tensorboard_log_dir)
     
     exp = Experiment(dataloader_train, dataloader_train, dataloader_train, optimizer, criterion, writer)
-    model = exp.run(model)
+    #model = exp.run(model)
     exp.test(model)
     
-    model_path = os.path.join(cfg.OUTPUT_PATH, cfg.MODEL_DIR)
+    model_path = os.path.join(cfg.OUTPUT_PATH, cfg.MODEL_DIR, cfg.MODEL_NAME)
     torch.save(model.state_dict(), model_path)
-    print('Model is saved to : {}'.format(model_dir))
+    print('Model is saved to : {}'.format(model_path))
     
     print('Tensorboard logs are saved to : {}'.format(tensorboard_log_dir))
     writer.close()
