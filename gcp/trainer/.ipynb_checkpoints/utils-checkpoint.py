@@ -37,7 +37,7 @@ def download_data_from_gcs():
     '''
         Downloads data from Google Cloud Storage (GCS) bucket.
     '''
-    logging.info('Downloading data from Google Cloud Storage')
+    logging.info('- Downloading data from Google Cloud Storage -')
     subprocess.call([
         'gsutil', '-q', '-m', 'cp',
         # Storage path
@@ -69,7 +69,7 @@ def export_to_gcs():
     '''
     logging.info(' - Exporting all training files to GCS Bucket -\n')
     subprocess.call([
-        'gsutil', '-q', '-m', 'cp', '-r'
+        'gsutil', '-q', '-m', 'cp', '-r',
         # Output path
         os.path.join(cfg.OUTPUT_PATH),
         # GCS path

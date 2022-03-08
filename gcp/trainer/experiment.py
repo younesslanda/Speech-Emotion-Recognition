@@ -4,6 +4,8 @@ import copy, time, logging
 from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
 
+import torch
+
 from config import Config as cfg
 
 class Experiment:
@@ -38,7 +40,7 @@ class Experiment:
                     
                 running_loss = 0.0
                 running_emotion_corrects = 0
-                running_gender_corrects = 
+                running_gender_corrects = 0
                 
                 for i_batch, sample_batched in enumerate(self.dataloaders[phase]):
                     features, lengths, emotion_idxs, gender_idxs = sample_batched
@@ -53,8 +55,8 @@ class Experiment:
                         _, emotion_predictions = torch.max(emotion_output, 1)
                         _, gender_predictions  = torch.max(gender_output, 1)
 
-                        emotion_loss = self.criterion(emotion_predictions, emotion_idxs)
-                        gender_loss  = self.criterion(gender_predictions, gender_idxs)
+                        emotion_loss = self.criterion(emotion_output, emotion_idxs)
+                        gender_loss  = self.criterion(gender_output, gender_idxs)
 
                         total_loss = cfg.ALPHA * emotion_loss + cfg.BETA * gender_loss
 
@@ -132,7 +134,7 @@ class Experiment:
         logging.info('Generating the classification report')
         emotion_classification_report = classification_report(true_emotion, pred_emotion, target_names=cfg.EMOTION_NAMES, 
                                                               labels=cfg.EMOTION_LABELS)
-        gender_classification_report  = classification_report(true_gender , pred_gender, target_names=cfg.GENDER_NAMES
+        gender_classification_report  = classification_report(true_gender , pred_gender, target_names=cfg.GENDER_NAMES,
                                                              labels=cfg.GENDER_LABELS)
         
         logging.info('Writing the confusion matrix figure of the test set to TensorBoard ')
@@ -153,3 +155,8 @@ class Experiment:
         self.writer.add_text('Test/E/report', emotion_classification_report)
         logging.info('classification report - gender')
         self.writer.add_text('Test/G/report', gender_classification_report)
+        
+if __name__ == '__main__':
+    train_pck_dir = '../feature-extraction/test'
+    dataset = Dataset(train_pck_dir)
+    exp = Experiment(dataset, dataset, dataset, optimizer, criterion, writer)

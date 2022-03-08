@@ -29,6 +29,11 @@ class ExtractFeaturesTest:
         
         resampler = aT.Resample(sample_rate, cfg.SAMPLE_RATE, dtype=waveform.dtype)
         waveform_ = resampler(waveform)
+        
+        effects = [
+            ['channels', '1'], # convert to 1 channel
+        ]
+        waveform_, _ = torchaudio.sox_effects.apply_effects_tensor(waveform_, cfg.SAMPLE_RATE, effects)
 
         melspec = self.mel_spectrogram(waveform_)
 

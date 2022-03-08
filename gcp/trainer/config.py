@@ -30,7 +30,7 @@ class Config:
     BATHC_SIZE   = 64
     LR           = 1e-4
     WEIGHT_DECAY = 1e-06
-    NUM_EPOCHS   = 100
+    NUM_EPOCHS   = 2
     
     # For loss function
     ALPHA = 1
@@ -39,6 +39,7 @@ class Config:
     # Classes
     EMOTION_NAMES  = ['neutral', 'calm', 'happy', 'sad', 'angry', 'fearful', 'disgust', 'surprised']
     EMOTION_LABELS = [1, 2, 3, 4, 5, 6, 7, 8]
+    EMOTION_LABEL_2_IXD = {1 : 0, 2 : 1, 3 : 2, 4 : 3, 5 : 4, 6 : 5, 7 : 6, 8 : 7}
     
     GENDER_NAMES   = ['female', 'male']
     GENDER_LABELS  = [0, 1]

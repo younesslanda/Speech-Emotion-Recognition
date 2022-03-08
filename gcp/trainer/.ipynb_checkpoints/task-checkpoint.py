@@ -6,6 +6,7 @@ from torch.optim import Adam
 import torch.nn as nn
 from torch.utils.data import DataLoader
 
+from distutils.version import LooseVersion
 from torch.utils.tensorboard import SummaryWriter
 
 from utils import download_data_from_gcs, make_directories, export_to_gcs
@@ -43,10 +44,10 @@ def main():
     
     dataloader_train = DataLoader(dataset=dataset_train, batch_size=cfg.BATHC_SIZE, shuffle=True, collate_fn=collate_fn)
     dataloader_valid = DataLoader(dataset=dataset_valid, batch_size=cfg.BATHC_SIZE, shuffle=True, collate_fn=collate_fn)
-    dataloader_test  = DataLoader(dataset=dataset_test,  batch_size=1, shuffle=True, collate_fn=collate_fn)
+    dataloader_test  = DataLoader(dataset=dataset_test,  batch_size=1, collate_fn=collate_fn)
     
     # Defining the model
-    logging.info('DEVICE usef : {}'.format(cfg.DEVICE))
+    logging.info('DEVICE used : {}'.format(cfg.DEVICE))
     model = Speech2Emotion().to(cfg.DEVICE)
     
     optimizer = Adam(model.parameters(), lr=cfg.LR, weight_decay=cfg.WEIGHT_DECAY)
@@ -78,4 +79,27 @@ def main():
     logging.info('Training job completed. Exiting...')
     
 if __name__ == '__main__':
-    main()
+    #main()
+    
+    train_pck_dir = '../../feature-extraction/test'
+    dataset = Dataset(train_pck_dir)
+    dataloader_train = DataLoader(dataset=dataset, batch_size=cfg.BATHC_SIZE, shuffle=True, collate_fn=collate_fn)
+    
+    model = Speech2Emotion().to(cfg.DEVICE)
+    
+    optimizer = Adam(model.parameters(), lr=cfg.LR, weight_decay=cfg.WEIGHT_DECAY)
+    criterion = nn.CrossEntropyLoss()
+    
+    tensorboard_log_dir = os.path.join(cfg.OUTPUT_PATH, cfg.LOG_DIR, cfg.TENSORBOARD_LOG_DIR)
+    writer = SummaryWriter(tensorboard_log_dir)
+    
+    exp = Experiment(dataloader_train, dataloader_train, dataloader_train, optimizer, criterion, writer)
+    model = exp.run(model)
+    exp.test(model)
+    
+    model_path = os.path.join(cfg.OUTPUT_PATH, cfg.MODEL_DIR)
+    torch.save(model.state_dict(), model_path)
+    print('Model is saved to : {}'.format(model_dir))
+    
+    print('Tensorboard logs are saved to : {}'.format(tensorboard_log_dir))
+    writer.close()
