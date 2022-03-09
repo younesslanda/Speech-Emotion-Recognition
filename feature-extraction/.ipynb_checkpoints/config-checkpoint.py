@@ -17,3 +17,7 @@ class Config:
     TIME_MASK_PARAM = 60
     FREQ_MASK_PARAM = 60
     
+    TRAIN_DIR = 'train'
+    TEST_DIR  = 'test'
+    VALID_DIR = 'valid'
+    

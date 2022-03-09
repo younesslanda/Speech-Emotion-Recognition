@@ -1,6 +1,5 @@
 #Author : Youness Landa
 import os, subprocess, logging
-import subprocess
 
 from config import Config as cfg
 
