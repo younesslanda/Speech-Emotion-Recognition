@@ -8,9 +8,9 @@ class Config:
     LOCAL_PATH     = 'tmp'
     OUTPUT_PATH    = 'output'
     
-    TRAIN_DATA_DIR = 'train'
-    VALID_DATA_DIR = 'valid'
-    TEST_DATA_DIR  = 'test'
+    TRAIN_DATA_DIR = '../../feature-extraction/train'
+    VALID_DATA_DIR = '../../feature-extraction/valid'
+    TEST_DATA_DIR  = '../../feature-extraction/test'
     
     MODEL_DIR           = 'model'
     MODEL_NAME          = 'speech2emotion.pt'
@@ -27,10 +27,10 @@ class Config:
     NUM_GENDER_CLASSES  = 2
     NUM_EMOTION_CLASSES = 8
     
-    BATHC_SIZE   = 64
+    BATHC_SIZE   = 128
     LR           = 1e-4
     WEIGHT_DECAY = 1e-06
-    NUM_EPOCHS   = 2
+    NUM_EPOCHS   = 1
     
     # For loss function
     ALPHA = 1

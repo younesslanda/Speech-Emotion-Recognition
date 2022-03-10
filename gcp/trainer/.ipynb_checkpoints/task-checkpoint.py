@@ -30,16 +30,19 @@ def main():
     make_directories()
     
     # Downloading data from GCS Bucket
-    download_data_from_gcs()
+    #download_data_from_gcs()
     
     # DataLoaders
-    train_pck_dir = os.path.join(cfg.LOCAL_PATH, cfg.TRAIN_DATA_DIR) 
+    train_pck_dir = os.path.join(cfg.TRAIN_DATA_DIR) 
+    #train_pck_dir = os.path.join(cfg.LOCAL_PATH, cfg.TRAIN_DATA_DIR) 
     dataset_train = Dataset(train_pck_dir)
     
-    valid_pck_dir = os.path.join(cfg.LOCAL_PATH, cfg.VALID_DATA_DIR) 
+    valid_pck_dir = os.path.join(cfg.VALID_DATA_DIR) 
+    #valid_pck_dir = os.path.join(cfg.LOCAL_PATH, cfg.VALID_DATA_DIR) 
     dataset_valid = Dataset(valid_pck_dir)
     
-    test_pck_dir  = os.path.join(cfg.LOCAL_PATH,  cfg.TEST_DATA_DIR) 
+    test_pck_dir  = os.path.join(cfg.TEST_DATA_DIR) 
+    #test_pck_dir  = os.path.join(cfg.LOCAL_PATH,  cfg.TEST_DATA_DIR) 
     dataset_test  = Dataset(test_pck_dir)
     
     dataloader_train = DataLoader(dataset=dataset_train, batch_size=cfg.BATHC_SIZE, shuffle=True, collate_fn=collate_fn)

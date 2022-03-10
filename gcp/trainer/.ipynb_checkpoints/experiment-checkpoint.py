@@ -163,8 +163,3 @@ class Experiment:
         logging.info(gender_classification_report)
         print('classification report - gender')
         self.writer.add_text('Test/G/report', gender_classification_report)
-        
-if __name__ == '__main__':
-    train_pck_dir = '../feature-extraction/test'
-    dataset = Dataset(train_pck_dir)
-    exp = Experiment(dataset, dataset, dataset, optimizer, criterion, writer)

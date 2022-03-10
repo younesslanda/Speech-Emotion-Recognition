@@ -50,23 +50,3 @@ def collate_fn(batch):
 
     return (padded_features.to(cfg.DEVICE), torch.tensor(lengths).to(cfg.DEVICE),
            torch.tensor(emotion_idxs).to(cfg.DEVICE), torch.tensor(gender_idxs).to(cfg.DEVICE))
-
-if __name__ == '__main__':
-    from torch.utils.data import DataLoader
-    
-    train_pck_dir = '../../feature-extraction/test'
-    dataset = Dataset(train_pck_dir)
-    print(len(dataset))
-    print(dataset[15][0].shape, dataset[15][1], dataset[15][2], dataset[15][3])
-    
-    batch_ = [dataset[0], dataset[1], dataset[2], dataset[3]]
-    
-    print(cfg.DEVICE)
-    batch = collate_fn(batch_)
-    print(batch[0].shape, batch[1], batch[2], batch[3])
-    
-    print(cfg.EMOTION_LABEL_2_IXD)
-    
-    dataloader_train = DataLoader(dataset=dataset, batch_size=cfg.BATHC_SIZE, shuffle=True, collate_fn=collate_fn)
-    ll = next(iter(dataloader_train))
-    print(ll[0].shape, ll[1], ll[2])
